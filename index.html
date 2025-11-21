@@ -94,6 +94,7 @@
             border-right: none;
             border-radius: 8px 0 0 8px;
             font-weight: 600;
+            min-width: 80px;
         }
         
         input, textarea, select {
@@ -123,6 +124,10 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+        }
+        
+        .exporter-section {
+            margin-bottom: 15px;
         }
         
         button {
@@ -647,21 +652,18 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- New Exporter Name Section -->
+                <div class="exporter-section">
+                    <label for="exporter-name">Exporter Name</label>
+                    <input type="text" id="exporter-name" placeholder="Enter exporter name (e.g., ZINITH AGENCIES)" value="ZINITH AGENCIES">
+                </div>
                 
                 <div class="template-section">
                     <label for="message-template">Quick Message Templates</label>
                     <select id="message-template" class="template-select">
                         <option value="">-- Select a template --</option>
-                        <option value="Hello, I'm interested in your products/services">💼 Business Inquiry</option>
-                        <option value="Hi, I'd like to know more about your pricing">💰 Pricing Information</option>
-                        <option value="Hello, I need support with my order">🛍️ Order Support</option>
-                        <option value="Hi, I want to book an appointment">📅 Book Appointment</option>
-                        <option value="Hello, can you send me your catalog?">📚 Request Catalog</option>
-                        <option value="Hi, I have a question about your services">❓ General Question</option>
-                        <option value="Hello, I'd like to place an order">🛒 Place Order</option>
-                        <option value="Hi, can we discuss collaboration opportunities?">🤝 Collaboration</option>
-                        <option value="Hello, I need technical support">🔧 Technical Support</option>
-                        <option value="Hi, I want to subscribe to your newsletter">📧 Newsletter Signup</option>
+                        <!-- Templates will be populated dynamically -->
                     </select>
                 </div>
                 
@@ -770,6 +772,108 @@
             '💕', '😘', '🤣', '😁', '😄', '😅', '🤷', '🙌', '💪', '👀',
             '💰', '📱', '🕒', '📍', '✅', '❌', '⭐', '🎯', '🚀', '💼'
         ];
+
+        // Message templates with placeholders
+        const messageTemplates = [
+            {
+                title: "FINAL WARNING FROM MORBI CERAMIC INDUSTRY",
+                template: `*FINAL WARNING FROM MORBI CERAMIC INDUSTRY*
+
+Clear the pending payment of *{EXPORTER_NAME}* immediately.
+🔴 If you fail to settle the dues now, all Morbi manufacturers will permanently stop business with you.
+The Morbi Ceramic Association has started blacklisting defaulting international buyers, and your name is under review.
+Non-payment cases are being forwarded to global trade authorities.
+Settle the dues at once or face legal pursuit.`
+            },
+            {
+                title: "LAST AND FINAL NOTICE", 
+                template: `*LAST AND FINAL NOTICE*
+
+Your payment toward *{EXPORTER_NAME}* is still pending.
+🔴 Continued delay will result in a permanent industry ban from Morbi manufacturers.
+Your company is already under blacklisting evaluation.
+Non-payment is being examined for export fraud violations.
+Clear the dues immediately.`
+            },
+            {
+                title: "CRITICAL PAYMENT WARNING",
+                template: `*CRITICAL PAYMENT WARNING*
+
+The overdue amount of *{EXPORTER_NAME}* must be settled now.
+Your name has entered the defaulter review panel.
+🔴 Morbi suppliers will not continue business with you if you ignore this.
+Your default status is being forwarded for international trade review.
+Immediate payment is required.`
+            },
+            {
+                title: "FINAL ALERT FROM MORBI CERAMIC ASSOCIATION",
+                template: `*FINAL ALERT FROM MORBI CERAMIC ASSOCIATION*
+
+Your company is under investigation for non-payment to *{EXPORTER_NAME}*.
+🔴 Further delay will lead to complete business termination from Morbi factories.
+Defaulting buyers are being listed for blacklisting.
+Your case is moving toward export compliance authorities.
+Settle your dues now.`
+            },
+            {
+                title: "STRICT FINAL WARNING",
+                template: `*STRICT FINAL WARNING*
+
+Payment to *{EXPORTER_NAME}* is long overdue.
+🔴 Morbi manufacturers have decided to block all defaulters permanently.
+Your non-payment is being recorded by the Association.
+Your details are being prepared for global export review.
+Clear the dues immediately.`
+            },
+            {
+                title: "FINAL DEMAND BEFORE LEGAL ACTION", 
+                template: `*FINAL DEMAND BEFORE LEGAL ACTION*
+
+You must clear the pending dues of *{EXPORTER_NAME}* at once.
+Your default record is being shared with international trade bodies.
+🔴 Failure to pay may trigger export fraud proceedings.
+Settle today to avoid legal complications.`
+            },
+            {
+                title: "LAST INTERNATIONAL WARNING",
+                template: `*LAST INTERNATIONAL WARNING*
+
+Your company has not cleared the dues of *{EXPORTER_NAME}*.
+🔴 Morbi Ceramic Industry will permanently stop all business if dues remain unpaid.
+Your name is under blacklisting review.
+Non-payment will be reported to global trade authorities.
+Immediate payment is mandatory.`
+            },
+            {
+                title: "FINAL TRADE SUSPENSION NOTICE",
+                template: `*FINAL TRADE SUSPENSION NOTICE*
+
+Your payment to *{EXPORTER_NAME}* is overdue.
+🔴 A permanent suspension of trade with Morbi manufacturers is being initiated.
+Your default history is under verification by the Association.
+Your case may escalate to international legal review.
+Settle the amount now.`
+            },
+            {
+                title: "EXPORT DEFAULT – FINAL WARNING",
+                template: `*EXPORT DEFAULT – FINAL WARNING*
+
+Your overdue payment has placed you on the defaulting buyers' list.
+🔴 Blacklisting verification has already begun.
+Non-payment will be forwarded as an export fraud alert.
+Your name will be blocked across all Morbi suppliers.
+Settle immediately.`
+            },
+            {
+                title: "FINAL WARNING",
+                template: `*FINAL WARNING*
+
+Immediate settlement of *{EXPORTER_NAME}* payment is required.
+🔴 Your company is under blacklisting evaluation, and non-payment will be escalated.
+Your record is being reviewed by international trade authorities.
+Pay now or face strict legal action.`
+            }
+        ];
         
         // Formatting function (global scope)
         function applyFormatting(type) {
@@ -811,13 +915,104 @@
                 alert('Please select some text first!');
             }
         }
+
+        // Function to replace exporter name in template
+        function replaceExporterName(template, exporterName) {
+            return template.replace(/{EXPORTER_NAME}/g, exporterName);
+        }
+
+        // Function to get random template
+        function getRandomTemplate() {
+            const randomIndex = Math.floor(Math.random() * messageTemplates.length);
+            return messageTemplates[randomIndex];
+        }
+
+        // Function to populate template dropdown
+        function populateTemplateDropdown() {
+            const templateSelect = document.getElementById('message-template');
+            templateSelect.innerHTML = '<option value="">-- Select a template --</option>';
+            
+            messageTemplates.forEach((template, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${index + 1}. ${template.title}`;
+                templateSelect.appendChild(option);
+            });
+
+            // Set random template as default
+            const randomTemplate = getRandomTemplate();
+            const exporterName = document.getElementById('exporter-name').value;
+            const populatedTemplate = replaceExporterName(randomTemplate.template, exporterName);
+            document.getElementById('message').value = populatedTemplate;
+            updatePreview();
+        }
         
+        // Format text with multiple formatting options
+        function formatText(text) {
+            if (!text) return '';
+            
+            // Convert *text* to bold HTML
+            let formatted = text.replace(/\*(.*?)\*/g, '<span class="bold-text">$1</span>');
+            // Convert _text_ to italic HTML
+            formatted = formatted.replace(/_(.*?)_/g, '<span class="italic-text">$1</span>');
+            // Convert ~text~ to strikethrough HTML
+            formatted = formatted.replace(/~(.*?)~/g, '<span class="strike-text">$1</span>');
+            
+            // Handle line breaks
+            formatted = formatted.replace(/\n/g, '<br>');
+            
+            return formatted;
+        }
+        
+        // Insert text at cursor position
+        function insertAtCursor(textarea, text) {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const value = textarea.value;
+            
+            textarea.value = value.substring(0, start) + text + value.substring(end);
+            textarea.selectionStart = textarea.selectionEnd = start + text.length;
+            textarea.focus();
+            
+            // Trigger input event for preview update
+            const event = new Event('input', { bubbles: true });
+            textarea.dispatchEvent(event);
+        }
+        
+        // Update live preview
+        function updatePreview() {
+            const countryCodeDisplay = document.getElementById('country-code-display');
+            const phoneNumberInput = document.getElementById('phone-number');
+            const messageInput = document.getElementById('message');
+            const previewContact = document.getElementById('preview-contact');
+            const previewMessage = document.getElementById('preview-message');
+            
+            const countryCode = countryCodeDisplay.textContent.replace('+', '');
+            const phoneNumber = phoneNumberInput.value.trim();
+            const message = messageInput.value.trim();
+            
+            // Update contact preview
+            if (phoneNumber) {
+                previewContact.textContent = `+${countryCode} ${phoneNumber}`;
+            } else {
+                previewContact.textContent = '+91 9876543210';
+            }
+            
+            // Update message preview with formatting
+            if (message) {
+                previewMessage.innerHTML = formatText(message);
+            } else {
+                previewMessage.innerHTML = 'Type your message to see preview...';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const countryCodeSelect = document.getElementById('country-code');
             const countryCodeDisplay = document.getElementById('country-code-display');
             const phoneNumberInput = document.getElementById('phone-number');
             const messageInput = document.getElementById('message');
             const messageTemplate = document.getElementById('message-template');
+            const exporterNameInput = document.getElementById('exporter-name');
             const generateBtn = document.getElementById('generate-btn');
             const resultSection = document.getElementById('result-section');
             const shortUrl = document.getElementById('short-url');
@@ -826,8 +1021,6 @@
             const historyList = document.getElementById('history-list');
             const clearHistoryBtn = document.getElementById('clear-history');
             const loading = document.getElementById('loading');
-            const previewContact = document.getElementById('preview-contact');
-            const previewMessage = document.getElementById('preview-message');
             const emojiPicker = document.getElementById('emoji-picker');
             
             // Load history from localStorage
@@ -835,18 +1028,57 @@
             renderHistory();
             
             // Initialize emoji picker
+            function initializeEmojiPicker() {
+                emojiPicker.innerHTML = '';
+                popularEmojis.forEach(emoji => {
+                    const emojiBtn = document.createElement('button');
+                    emojiBtn.className = 'emoji-btn';
+                    emojiBtn.textContent = emoji;
+                    emojiBtn.title = 'Click to add emoji';
+                    emojiBtn.addEventListener('click', function() {
+                        insertAtCursor(messageInput, emoji);
+                        updatePreview();
+                    });
+                    emojiPicker.appendChild(emojiBtn);
+                });
+            }
+            
             initializeEmojiPicker();
             
             // Set India as default country
             countryCodeSelect.value = '91';
             countryCodeDisplay.textContent = '+91';
             
+            // Populate template dropdown with random default
+            populateTemplateDropdown();
+            
             // Handle template selection
             messageTemplate.addEventListener('change', function() {
-                if (this.value) {
-                    messageInput.value = this.value;
+                if (this.value !== "") {
+                    const selectedTemplate = messageTemplates[this.value];
+                    const exporterName = exporterNameInput.value;
+                    const populatedTemplate = replaceExporterName(selectedTemplate.template, exporterName);
+                    messageInput.value = populatedTemplate;
                     updatePreview();
                 }
+            });
+
+            // Update message when exporter name changes
+            exporterNameInput.addEventListener('input', function() {
+                const currentMessage = messageInput.value;
+                const exporterName = this.value;
+                
+                // Update all templates with new exporter name
+                messageTemplates.forEach(template => {
+                    const oldPattern = new RegExp(`\\*${template.title}\\*\\s*\\n\\nClear the pending payment of \\*(.*?)\\*`, 'g');
+                    const newContent = replaceExporterName(template.template, exporterName);
+                    
+                    if (currentMessage.includes(template.title)) {
+                        messageInput.value = newContent;
+                    }
+                });
+                
+                updatePreview();
             });
             
             // Update country code display
@@ -865,6 +1097,29 @@
             // Update preview when inputs change
             phoneNumberInput.addEventListener('input', updatePreview);
             messageInput.addEventListener('input', updatePreview);
+            
+            // Handle custom country code input
+            countryCodeDisplay.addEventListener('input', function() {
+                if (this.textContent === '+') {
+                    this.textContent = '+';
+                }
+                updatePreview();
+            });
+            
+            countryCodeDisplay.addEventListener('blur', function() {
+                if (this.textContent === '+' || this.textContent === '') {
+                    this.textContent = '+91';
+                    countryCodeSelect.value = '91';
+                }
+                updatePreview();
+            });
+            
+            countryCodeDisplay.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.blur();
+                }
+            });
             
             // Generate WhatsApp link and shorten it with is.gd
             generateBtn.addEventListener('click', async function() {
@@ -914,6 +1169,7 @@
                     renderHistory();
                     
                 } catch (error) {
+                    console.error('Error creating is.gd link:', error);
                     alert('Error creating short link: ' + error.message);
                     // Fallback to custom short links
                     try {
@@ -921,8 +1177,22 @@
                         const fallbackLink = await createCustomShortLink(whatsappLink);
                         shortUrl.textContent = fallbackLink;
                         resultSection.style.display = 'block';
+                        
+                        // Save fallback to history
+                        const linkData = {
+                            original: whatsappLink,
+                            short: fallbackLink,
+                            phone: '+' + countryCode + ' ' + phoneNumber,
+                            message: message || 'No message',
+                            date: new Date().toLocaleString()
+                        };
+                        
+                        urlHistory.unshift(linkData);
+                        localStorage.setItem('whatsappHistory', JSON.stringify(urlHistory));
+                        renderHistory();
                     } catch (fallbackError) {
-                        alert('Both methods failed: ' + fallbackError.message);
+                        console.error('Fallback also failed:', fallbackError);
+                        alert('Both methods failed. Please try again later.');
                     }
                 } finally {
                     // Hide loading
@@ -937,7 +1207,9 @@
                 let url = `https://api.whatsapp.com/send?phone=${countryCode}${phoneNumber}`;
                 
                 if (message) {
-                    url += `&text=${encodeURIComponent(message)}`;
+                    // Encode the message for URL
+                    const encodedMessage = encodeURIComponent(message);
+                    url += `&text=${encodedMessage}`;
                 }
                 
                 return url;
@@ -964,7 +1236,8 @@
                         if (response && response.shorturl) {
                             resolve(response.shorturl);
                         } else {
-                            reject(new Error('Failed to create is.gd link'));
+                            const errorMsg = response && response.errormessage ? response.errormessage : 'Unknown error';
+                            reject(new Error(errorMsg));
                         }
                     };
                     
@@ -995,15 +1268,17 @@
             
             // Fallback: Create custom short link
             async function createCustomShortLink(longURL) {
-                // Generate custom short code
-                const shortCode = generateShortCode();
-                const customShortUrl = `${window.location.origin}?wa=${shortCode}`;
-                
-                // Store the mapping in localStorage
-                urlMappings[shortCode] = longURL;
-                localStorage.setItem('urlMappings', JSON.stringify(urlMappings));
-                
-                return customShortUrl;
+                return new Promise((resolve) => {
+                    // Generate custom short code
+                    const shortCode = generateShortCode();
+                    const customShortUrl = `${window.location.origin}${window.location.pathname}?wa=${shortCode}`;
+                    
+                    // Store the mapping in localStorage
+                    urlMappings[shortCode] = longURL;
+                    localStorage.setItem('urlMappings', JSON.stringify(urlMappings));
+                    
+                    resolve(customShortUrl);
+                });
             }
             
             // Generate random short code
@@ -1014,69 +1289,6 @@
                     result += chars.charAt(Math.floor(Math.random() * chars.length));
                 }
                 return result;
-            }
-            
-            // Initialize emoji picker
-            function initializeEmojiPicker() {
-                emojiPicker.innerHTML = '';
-                popularEmojis.forEach(emoji => {
-                    const emojiBtn = document.createElement('button');
-                    emojiBtn.className = 'emoji-btn';
-                    emojiBtn.textContent = emoji;
-                    emojiBtn.title = 'Click to add emoji';
-                    emojiBtn.addEventListener('click', function() {
-                        insertAtCursor(messageInput, emoji);
-                        updatePreview();
-                    });
-                    emojiPicker.appendChild(emojiBtn);
-                });
-            }
-            
-            // Insert text at cursor position
-            function insertAtCursor(textarea, text) {
-                const start = textarea.selectionStart;
-                const end = textarea.selectionEnd;
-                const value = textarea.value;
-                
-                textarea.value = value.substring(0, start) + text + value.substring(end);
-                textarea.selectionStart = textarea.selectionEnd = start + text.length;
-                textarea.focus();
-                
-                // Trigger input event for preview update
-                const event = new Event('input', { bubbles: true });
-                textarea.dispatchEvent(event);
-            }
-            
-            // Format text with multiple formatting options
-            function formatText(text) {
-                // Convert *text* to bold HTML
-                let formatted = text.replace(/\*(.*?)\*/g, '<span class="bold-text">$1</span>');
-                // Convert _text_ to italic HTML
-                formatted = formatted.replace(/_(.*?)_/g, '<span class="italic-text">$1</span>');
-                // Convert ~text~ to strikethrough HTML
-                formatted = formatted.replace(/~(.*?)~/g, '<span class="strike-text">$1</span>');
-                return formatted;
-            }
-            
-            // Update live preview
-            function updatePreview() {
-                const countryCode = countryCodeDisplay.textContent.replace('+', '');
-                const phoneNumber = phoneNumberInput.value.trim();
-                const message = messageInput.value.trim();
-                
-                // Update contact preview
-                if (phoneNumber) {
-                    previewContact.textContent = `+${countryCode} ${phoneNumber}`;
-                } else {
-                    previewContact.textContent = '+91 9876543210';
-                }
-                
-                // Update message preview with formatting
-                if (message) {
-                    previewMessage.innerHTML = formatText(message);
-                } else {
-                    previewMessage.innerHTML = 'Type your message to see preview...';
-                }
             }
             
             // Copy to clipboard
@@ -1133,7 +1345,7 @@
                     
                     historyItem.innerHTML = `
                         <div class="history-urls">
-                            <div class="original-url"><strong>Phone:</strong> ${item.phone} | <strong>Message:</strong> ${item.message}</div>
+                            <div class="original-url"><strong>Phone:</strong> ${item.phone} | <strong>Message:</strong> ${item.message.substring(0, 50)}${item.message.length > 50 ? '...' : ''}</div>
                             <div class="shortened-url">${item.short}</div>
                             <small>${badge} | Created: ${item.date}</small>
                         </div>
@@ -1191,6 +1403,8 @@
                     if (originalUrl) {
                         // Redirect to the original WhatsApp URL
                         window.location.href = originalUrl;
+                    } else {
+                        console.log('No URL mapping found for code:', waCode);
                     }
                 }
             }
