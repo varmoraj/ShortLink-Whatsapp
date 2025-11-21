@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Link Generator - Live Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin-top: 30px;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #25D366 0%, #128C7E 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            padding: 30px;
+            display: flex;
+            gap: 30px;
+        }
+        
+        .form-section {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #25D366;
+        }
+        
+        .preview-section {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #128C7E;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .input-with-prefix {
+            display: flex;
+            align-items: center;
+        }
+        
+        .country-code {
+            background: #e9ecef;
+            padding: 12px 15px;
+            border: 2px solid #e1e1e1;
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            font-weight: 600;
+        }
+        
+        input, textarea, select {
+            padding: 12px 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            width: 100%;
+        }
+        
+        .phone-input {
+            border-radius: 0 8px 8px 0;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: #25D366;
+            outline: none;
+        }
+        
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .phone-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        button {
+            background: linear-gradient(90deg, #25D366 0%, #128C7E 100%);
+            color: white;
+            border: none;
+            padding: 18px 25px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .powered-by {
+            text-align: center;
+            margin-top: 15px;
+            padding: 8px;
+            background: #e8f5e8;
+            border-radius: 6px;
+            border: 1px solid #128C7E;
+            font-size: 0.9rem;
+        }
+        
+        /* WhatsApp Mockup Styles */
+        .whatsapp-mockup {
+            background: #e6ddd4;
+            border-radius: 15px;
+            padding: 20px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .whatsapp-header {
+            background: #075E54;
+            color: white;
+            padding: 15px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .whatsapp-avatar {
+            width: 40px;
+            height: 40px;
+            background: #25D366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .whatsapp-contact {
+            flex: 1;
+        }
+        
+        .whatsapp-contact-name {
+            font-weight: 600;
+        }
+        
+        .whatsapp-contact-status {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .whatsapp-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #e6ddd4;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message.received {
+            align-items: flex-start;
+        }
+        
+        .message.sent {
+            align-items: flex-end;
+        }
+        
+        .message-bubble {
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 70%;
+            position: relative;
+        }
+        
+        .message.received .message-bubble {
+            background: white;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message.sent .message-bubble {
+            background: #dcf8c6;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .bold-text {
+            font-weight: bold;
+        }
+        
+        .italic-text {
+            font-style: italic;
+        }
+        
+        .strike-text {
+            text-decoration: line-through;
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .whatsapp-input {
+            background: white;
+            padding: 10px;
+            border-radius: 25px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .whatsapp-input input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 8px;
+        }
+        
+        .send-button {
+            background: #25D366;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        /* Formatting Symbols - Compact & Highlighted */
+        .formatting-symbols {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+            align-items: center;
+            padding: 3px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        
+        .format-symbol {
+            background: #ffffff;
+            border: 2px solid #25D366;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #25D366;
+            cursor: pointer;
+            padding: 3px 5px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 26px;
+            height: 26px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .format-symbol:hover {
+            background: #25D366;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+        
+        .format-symbol:active {
+            transform: translateY(0);
+        }
+        
+        .symbol-bold {
+            font-weight: 900;
+        }
+        
+        .symbol-italic {
+            font-style: italic;
+            font-weight: 700;
+        }
+        
+        .symbol-strike {
+            text-decoration: line-through;
+            font-weight: 700;
+        }
+        
+        .symbol-bold-italic {
+            font-weight: 900;
+            font-style: italic;
+        }
+        
+        /* Emoji Picker Styles */
+        .emoji-section {
+            margin-top: 15px;
+        }
+        
+        .emoji-picker {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            max-height: 100px;
+            overflow-y: auto;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e1e1e1;
+        }
+        
+        .emoji-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background 0.2s;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .emoji-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .template-section {
+            margin-bottom: 15px;
+        }
+        
+        .template-select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .result-section {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .result-box {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            border-left: 5px solid #25D366;
+        }
+        
+        .short-url {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #25D366;
+            word-break: break-all;
+            margin-bottom: 15px;
+        }
+        
+        .copy-btn {
+            background: #25D366;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+        
+        .test-btn {
+            background: #128C7E;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 10px;
+            color: #666;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #25D366;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .history-section {
+            margin-top: 40px;
+        }
+        
+        .history-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #e1e1e1;
+        }
+        
+        .history-urls {
+            flex: 1;
+            margin-right: 15px;
+        }
+        
+        .original-url {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+            word-break: break-all;
+        }
+        
+        .shortened-url {
+            font-weight: 600;
+            color: #25D366;
+            word-break: break-all;
+        }
+        
+        .history-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+        }
+        
+        .visit-btn {
+            background: #128C7E;
+        }
+        
+        .delete-btn {
+            background: #dc3545;
+        }
+        
+        .empty-history {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: white;
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .form-section, .preview-section {
+                flex: none;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                margin-top: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .history-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .history-actions {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>WhatsApp Link Generator</h1>
+            <p class="subtitle">Live Preview + Real is.gd Short Links 📱</p>
+        </header>
+        
+        <div class="main-content">
+            <!-- Left Side - Form -->
+            <div class="form-section">
+                <h3>Create Your WhatsApp Link</h3>
+                
+                <div class="phone-group">
+                    <div class="form-group">
+                        <label for="country-code">Country Code</label>
+                        <select id="country-code" class="country-code-select">
+                            <option value="91">India (+91)</option>
+                            <option value="93">Afghanistan (+93)</option>
+                            <option value="355">Albania (+355)</option>
+                            <option value="213">Algeria (+213)</option>
+                            <option value="54">Argentina (+54)</option>
+                            <option value="61">Australia (+61)</option>
+                            <option value="43">Austria (+43)</option>
+                            <option value="32">Belgium (+32)</option>
+                            <option value="55">Brazil (+55)</option>
+                            <option value="1">Canada (+1)</option>
+                            <option value="56">Chile (+56)</option>
+                            <option value="86">China (+86)</option>
+                            <option value="57">Colombia (+57)</option>
+                            <option value="506">Costa Rica (+506)</option>
+                            <option value="45">Denmark (+45)</option>
+                            <option value="20">Egypt (+20)</option>
+                            <option value="358">Finland (+358)</option>
+                            <option value="33">France (+33)</option>
+                            <option value="49">Germany (+49)</option>
+                            <option value="30">Greece (+30)</option>
+                            <option value="852">Hong Kong (+852)</option>
+                            <option value="62">Indonesia (+62)</option>
+                            <option value="353">Ireland (+353)</option>
+                            <option value="39">Italy (+39)</option>
+                            <option value="81">Japan (+81)</option>
+                            <option value="60">Malaysia (+60)</option>
+                            <option value="52">Mexico (+52)</option>
+                            <option value="31">Netherlands (+31)</option>
+                            <option value="64">New Zealand (+64)</option>
+                            <option value="234">Nigeria (+234)</option>
+                            <option value="47">Norway (+47)</option>
+                            <option value="92">Pakistan (+92)</option>
+                            <option value="63">Philippines (+63)</option>
+                            <option value="48">Poland (+48)</option>
+                            <option value="351">Portugal (+351)</option>
+                            <option value="7">Russia (+7)</option>
+                            <option value="65">Singapore (+65)</option>
+                            <option value="27">South Africa (+27)</option>
+                            <option value="82">South Korea (+82)</option>
+                            <option value="34">Spain (+34)</option>
+                            <option value="46">Sweden (+46)</option>
+                            <option value="41">Switzerland (+41)</option>
+                            <option value="886">Taiwan (+886)</option>
+                            <option value="66">Thailand (+66)</option>
+                            <option value="90">Turkey (+90)</option>
+                            <option value="971">UAE (+971)</option>
+                            <option value="44">UK (+44)</option>
+                            <option value="1">USA (+1)</option>
+                            <option value="custom">Custom Code</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone-number">Phone Number</label>
+                        <div class="input-with-prefix">
+                            <span class="country-code" id="country-code-display">+91</span>
+                            <input type="tel" id="phone-number" class="phone-input" placeholder="9876543210">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="template-section">
+                    <label for="message-template">Quick Message Templates</label>
+                    <select id="message-template" class="template-select">
+                        <option value="">-- Select a template --</option>
+                        <option value="Hello, I'm interested in your products/services">💼 Business Inquiry</option>
+                        <option value="Hi, I'd like to know more about your pricing">💰 Pricing Information</option>
+                        <option value="Hello, I need support with my order">🛍️ Order Support</option>
+                        <option value="Hi, I want to book an appointment">📅 Book Appointment</option>
+                        <option value="Hello, can you send me your catalog?">📚 Request Catalog</option>
+                        <option value="Hi, I have a question about your services">❓ General Question</option>
+                        <option value="Hello, I'd like to place an order">🛒 Place Order</option>
+                        <option value="Hi, can we discuss collaboration opportunities?">🤝 Collaboration</option>
+                        <option value="Hello, I need technical support">🔧 Technical Support</option>
+                        <option value="Hi, I want to subscribe to your newsletter">📧 Newsletter Signup</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Custom Message (Optional)</label>
+                    <textarea id="message" placeholder="Type your message here... Select text and use formatting symbols below"></textarea>
+                    
+                    <div class="formatting-symbols">
+                        <button type="button" class="format-symbol symbol-bold" onclick="applyFormatting('bold')" title="Bold">
+                            <strong>B</strong>
+                        </button>
+                        <button type="button" class="format-symbol symbol-italic" onclick="applyFormatting('italic')" title="Italic">
+                            <em>I</em>
+                        </button>
+                        <button type="button" class="format-symbol symbol-strike" onclick="applyFormatting('strike')" title="Strikethrough">
+                            <s>S</s>
+                        </button>
+                        <button type="button" class="format-symbol symbol-bold-italic" onclick="applyFormatting('boldItalic')" title="Bold Italic">
+                            <strong><em>BI</em></strong>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="emoji-section">
+                    <label>Add Emoji</label>
+                    <div class="emoji-picker" id="emoji-picker">
+                        <!-- Emojis will be added dynamically -->
+                    </div>
+                </div>
+
+                <div class="powered-by">
+                    <strong>✅ Powered by is.gd</strong> - Real short links
+                </div>
+                
+                <button id="generate-btn">Generate Real is.gd Short Link</button>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Creating your is.gd short link...</p>
+                </div>
+                
+                <div class="result-section" id="result-section">
+                    <h3>✅ Your Real is.gd Short Link:</h3>
+                    <div class="result-box">
+                        <div class="short-url" id="short-url"></div>
+                        <div>
+                            <button class="copy-btn" id="copy-btn">Copy to Clipboard</button>
+                            <button class="test-btn" id="test-btn">Test on WhatsApp</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side - WhatsApp Preview -->
+            <div class="preview-section">
+                <h3>Live WhatsApp Preview</h3>
+                <div class="whatsapp-mockup">
+                    <div class="whatsapp-header">
+                        <div class="whatsapp-avatar">W</div>
+                        <div class="whatsapp-contact">
+                            <div class="whatsapp-contact-name" id="preview-contact">+91 9876543210</div>
+                            <div class="whatsapp-contact-status">Online</div>
+                        </div>
+                    </div>
+                    
+                    <div class="whatsapp-messages">
+                        <div class="message sent">
+                            <div class="message-bubble" id="preview-message">
+                                Type your message to see preview...
+                            </div>
+                            <div class="message-time">10:01 AM</div>
+                        </div>
+                    </div>
+                    
+                    <div class="whatsapp-input">
+                        <input type="text" placeholder="Type a message" readonly>
+                        <div class="send-button">➤</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="history-section">
+            <div class="history-title">
+                <h3>Your WhatsApp Links</h3>
+                <button id="clear-history">Clear All</button>
+            </div>
+            <div class="history-list" id="history-list">
+                <!-- History items will be added here dynamically -->
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Made with ❤️ | WhatsApp Link Generator with Live Preview</p>
+    </footer>
+
+    <script>
+        // URL mapping storage for custom links (fallback)
+        let urlMappings = JSON.parse(localStorage.getItem('urlMappings')) || {};
+        
+        // Popular emojis for quick selection
+        const popularEmojis = [
+            '😊', '😂', '❤️', '😍', '🤔', '😎', '👍', '👋', '🎉', '🔥',
+            '💯', '✨', '🙏', '😢', '😡', '🤩', '🥳', '😴', '🤗', '👏',
+            '💕', '😘', '🤣', '😁', '😄', '😅', '🤷', '🙌', '💪', '👀',
+            '💰', '📱', '🕒', '📍', '✅', '❌', '⭐', '🎯', '🚀', '💼'
+        ];
+        
+        // Formatting function (global scope)
+        function applyFormatting(type) {
+            const messageInput = document.getElementById('message');
+            const start = messageInput.selectionStart;
+            const end = messageInput.selectionEnd;
+            const selectedText = messageInput.value.substring(start, end);
+            
+            if (selectedText) {
+                let formattedText = '';
+                
+                switch(type) {
+                    case 'bold':
+                        formattedText = `*${selectedText}*`;
+                        break;
+                    case 'italic':
+                        formattedText = `_${selectedText}_`;
+                        break;
+                    case 'strike':
+                        formattedText = `~${selectedText}~`;
+                        break;
+                    case 'boldItalic':
+                        formattedText = `*_${selectedText}_*`;
+                        break;
+                }
+                
+                // Replace selected text with formatted text
+                messageInput.value = messageInput.value.substring(0, start) + 
+                                   formattedText + 
+                                   messageInput.value.substring(end);
+                
+                // Update cursor position
+                messageInput.selectionStart = messageInput.selectionEnd = start + formattedText.length;
+                messageInput.focus();
+                
+                // Update preview
+                updatePreview();
+            } else {
+                alert('Please select some text first!');
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const countryCodeSelect = document.getElementById('country-code');
+            const countryCodeDisplay = document.getElementById('country-code-display');
+            const phoneNumberInput = document.getElementById('phone-number');
+            const messageInput = document.getElementById('message');
+            const messageTemplate = document.getElementById('message-template');
+            const generateBtn = document.getElementById('generate-btn');
+            const resultSection = document.getElementById('result-section');
+            const shortUrl = document.getElementById('short-url');
+            const copyBtn = document.getElementById('copy-btn');
+            const testBtn = document.getElementById('test-btn');
+            const historyList = document.getElementById('history-list');
+            const clearHistoryBtn = document.getElementById('clear-history');
+            const loading = document.getElementById('loading');
+            const previewContact = document.getElementById('preview-contact');
+            const previewMessage = document.getElementById('preview-message');
+            const emojiPicker = document.getElementById('emoji-picker');
+            
+            // Load history from localStorage
+            let urlHistory = JSON.parse(localStorage.getItem('whatsappHistory')) || [];
+            renderHistory();
+            
+            // Initialize emoji picker
+            initializeEmojiPicker();
+            
+            // Set India as default country
+            countryCodeSelect.value = '91';
+            countryCodeDisplay.textContent = '+91';
+            
+            // Handle template selection
+            messageTemplate.addEventListener('change', function() {
+                if (this.value) {
+                    messageInput.value = this.value;
+                    updatePreview();
+                }
+            });
+            
+            // Update country code display
+            countryCodeSelect.addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    countryCodeDisplay.textContent = '+';
+                    countryCodeDisplay.contentEditable = true;
+                    countryCodeDisplay.focus();
+                } else {
+                    countryCodeDisplay.textContent = '+' + this.value;
+                    countryCodeDisplay.contentEditable = false;
+                }
+                updatePreview();
+            });
+            
+            // Update preview when inputs change
+            phoneNumberInput.addEventListener('input', updatePreview);
+            messageInput.addEventListener('input', updatePreview);
+            
+            // Generate WhatsApp link and shorten it with is.gd
+            generateBtn.addEventListener('click', async function() {
+                const countryCode = countryCodeDisplay.textContent.replace('+', '');
+                const phoneNumber = phoneNumberInput.value.trim();
+                const message = messageInput.value.trim();
+                
+                if (!phoneNumber) {
+                    alert('Please enter a phone number');
+                    return;
+                }
+                
+                if (!/^\d+$/.test(phoneNumber)) {
+                    alert('Please enter a valid phone number (digits only)');
+                    return;
+                }
+                
+                // Show loading
+                loading.style.display = 'block';
+                generateBtn.disabled = true;
+                generateBtn.textContent = 'Creating is.gd Link...';
+                
+                try {
+                    // Create WhatsApp link
+                    const whatsappLink = createWhatsAppLink(countryCode, phoneNumber, message);
+                    
+                    // Create REAL is.gd short link
+                    const shortLink = await createIsGdShortLink(whatsappLink);
+                    
+                    // Display result
+                    shortUrl.textContent = shortLink;
+                    resultSection.style.display = 'block';
+                    
+                    // Save to history
+                    const linkData = {
+                        original: whatsappLink,
+                        short: shortLink,
+                        phone: '+' + countryCode + ' ' + phoneNumber,
+                        message: message || 'No message',
+                        date: new Date().toLocaleString()
+                    };
+                    
+                    urlHistory.unshift(linkData);
+                    localStorage.setItem('whatsappHistory', JSON.stringify(urlHistory));
+                    
+                    // Render updated history
+                    renderHistory();
+                    
+                } catch (error) {
+                    alert('Error creating short link: ' + error.message);
+                    // Fallback to custom short links
+                    try {
+                        const whatsappLink = createWhatsAppLink(countryCode, phoneNumber, message);
+                        const fallbackLink = await createCustomShortLink(whatsappLink);
+                        shortUrl.textContent = fallbackLink;
+                        resultSection.style.display = 'block';
+                    } catch (fallbackError) {
+                        alert('Both methods failed: ' + fallbackError.message);
+                    }
+                } finally {
+                    // Hide loading
+                    loading.style.display = 'none';
+                    generateBtn.disabled = false;
+                    generateBtn.textContent = 'Generate Real is.gd Short Link';
+                }
+            });
+            
+            // Create WhatsApp link
+            function createWhatsAppLink(countryCode, phoneNumber, message) {
+                let url = `https://api.whatsapp.com/send?phone=${countryCode}${phoneNumber}`;
+                
+                if (message) {
+                    url += `&text=${encodeURIComponent(message)}`;
+                }
+                
+                return url;
+            }
+            
+            // Create REAL is.gd short link using JSONP
+            function createIsGdShortLink(longURL) {
+                return new Promise((resolve, reject) => {
+                    // Create a unique callback name
+                    const callbackName = 'isgdCallback_' + Date.now();
+                    
+                    // Create script element for JSONP
+                    const script = document.createElement('script');
+                    script.src = `https://is.gd/create.php?format=json&url=${encodeURIComponent(longURL)}&callback=${callbackName}`;
+                    
+                    // Define the callback function
+                    window[callbackName] = function(response) {
+                        // Clean up
+                        delete window[callbackName];
+                        if (document.head.contains(script)) {
+                            document.head.removeChild(script);
+                        }
+                        
+                        if (response && response.shorturl) {
+                            resolve(response.shorturl);
+                        } else {
+                            reject(new Error('Failed to create is.gd link'));
+                        }
+                    };
+                    
+                    // Handle script load error
+                    script.onerror = function() {
+                        delete window[callbackName];
+                        if (document.head.contains(script)) {
+                            document.head.removeChild(script);
+                        }
+                        reject(new Error('Network error - is.gd not accessible'));
+                    };
+                    
+                    // Add script to document
+                    document.head.appendChild(script);
+                    
+                    // Set timeout for safety
+                    setTimeout(() => {
+                        if (window[callbackName]) {
+                            delete window[callbackName];
+                            if (document.head.contains(script)) {
+                                document.head.removeChild(script);
+                            }
+                            reject(new Error('Timeout creating is.gd link'));
+                        }
+                    }, 10000);
+                });
+            }
+            
+            // Fallback: Create custom short link
+            async function createCustomShortLink(longURL) {
+                // Generate custom short code
+                const shortCode = generateShortCode();
+                const customShortUrl = `${window.location.origin}?wa=${shortCode}`;
+                
+                // Store the mapping in localStorage
+                urlMappings[shortCode] = longURL;
+                localStorage.setItem('urlMappings', JSON.stringify(urlMappings));
+                
+                return customShortUrl;
+            }
+            
+            // Generate random short code
+            function generateShortCode() {
+                const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+                let result = '';
+                for (let i = 0; i < 6; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+            
+            // Initialize emoji picker
+            function initializeEmojiPicker() {
+                emojiPicker.innerHTML = '';
+                popularEmojis.forEach(emoji => {
+                    const emojiBtn = document.createElement('button');
+                    emojiBtn.className = 'emoji-btn';
+                    emojiBtn.textContent = emoji;
+                    emojiBtn.title = 'Click to add emoji';
+                    emojiBtn.addEventListener('click', function() {
+                        insertAtCursor(messageInput, emoji);
+                        updatePreview();
+                    });
+                    emojiPicker.appendChild(emojiBtn);
+                });
+            }
+            
+            // Insert text at cursor position
+            function insertAtCursor(textarea, text) {
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const value = textarea.value;
+                
+                textarea.value = value.substring(0, start) + text + value.substring(end);
+                textarea.selectionStart = textarea.selectionEnd = start + text.length;
+                textarea.focus();
+                
+                // Trigger input event for preview update
+                const event = new Event('input', { bubbles: true });
+                textarea.dispatchEvent(event);
+            }
+            
+            // Format text with multiple formatting options
+            function formatText(text) {
+                // Convert *text* to bold HTML
+                let formatted = text.replace(/\*(.*?)\*/g, '<span class="bold-text">$1</span>');
+                // Convert _text_ to italic HTML
+                formatted = formatted.replace(/_(.*?)_/g, '<span class="italic-text">$1</span>');
+                // Convert ~text~ to strikethrough HTML
+                formatted = formatted.replace(/~(.*?)~/g, '<span class="strike-text">$1</span>');
+                return formatted;
+            }
+            
+            // Update live preview
+            function updatePreview() {
+                const countryCode = countryCodeDisplay.textContent.replace('+', '');
+                const phoneNumber = phoneNumberInput.value.trim();
+                const message = messageInput.value.trim();
+                
+                // Update contact preview
+                if (phoneNumber) {
+                    previewContact.textContent = `+${countryCode} ${phoneNumber}`;
+                } else {
+                    previewContact.textContent = '+91 9876543210';
+                }
+                
+                // Update message preview with formatting
+                if (message) {
+                    previewMessage.innerHTML = formatText(message);
+                } else {
+                    previewMessage.innerHTML = 'Type your message to see preview...';
+                }
+            }
+            
+            // Copy to clipboard
+            copyBtn.addEventListener('click', function() {
+                const textToCopy = shortUrl.textContent;
+                
+                navigator.clipboard.writeText(textToCopy).then(function() {
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = 'Copied!';
+                    copyBtn.style.background = '#25D366';
+                    
+                    setTimeout(function() {
+                        copyBtn.textContent = originalText;
+                        copyBtn.style.background = '';
+                    }, 2000);
+                }).catch(function(err) {
+                    console.error('Could not copy text: ', err);
+                    alert('Failed to copy to clipboard');
+                });
+            });
+            
+            // Test the WhatsApp link
+            testBtn.addEventListener('click', function() {
+                const testUrl = shortUrl.textContent;
+                if (testUrl) {
+                    window.open(testUrl, '_blank');
+                }
+            });
+            
+            // Clear history
+            clearHistoryBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to clear all history?')) {
+                    urlHistory = [];
+                    localStorage.setItem('whatsappHistory', JSON.stringify(urlHistory));
+                    renderHistory();
+                }
+            });
+            
+            // Render history list
+            function renderHistory() {
+                if (urlHistory.length === 0) {
+                    historyList.innerHTML = '<div class="empty-history">No WhatsApp links generated yet</div>';
+                    return;
+                }
+                
+                historyList.innerHTML = '';
+                
+                urlHistory.forEach(function(item, index) {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    
+                    const isRealIsGd = item.short.includes('is.gd/');
+                    const badge = isRealIsGd ? '🔗 is.gd' : '⚡ Custom';
+                    
+                    historyItem.innerHTML = `
+                        <div class="history-urls">
+                            <div class="original-url"><strong>Phone:</strong> ${item.phone} | <strong>Message:</strong> ${item.message}</div>
+                            <div class="shortened-url">${item.short}</div>
+                            <small>${badge} | Created: ${item.date}</small>
+                        </div>
+                        <div class="history-actions">
+                            <button class="action-btn visit-btn" data-url="${item.short}">Test</button>
+                            <button class="action-btn copy-btn" data-url="${item.short}">Copy</button>
+                            <button class="action-btn delete-btn" data-index="${index}">Delete</button>
+                        </div>
+                    `;
+                    
+                    historyList.appendChild(historyItem);
+                });
+                
+                // Add event listeners to action buttons
+                document.querySelectorAll('.visit-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        window.open(this.getAttribute('data-url'), '_blank');
+                    });
+                });
+                
+                document.querySelectorAll('.copy-btn[data-url]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const urlToCopy = this.getAttribute('data-url');
+                        navigator.clipboard.writeText(urlToCopy).then(function() {
+                            const originalText = btn.textContent;
+                            btn.textContent = 'Copied!';
+                            btn.style.background = '#25D366';
+                            
+                            setTimeout(function() {
+                                btn.textContent = originalText;
+                                btn.style.background = '';
+                            }, 2000);
+                        });
+                    });
+                });
+                
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        urlHistory.splice(index, 1);
+                        localStorage.setItem('whatsappHistory', JSON.stringify(urlHistory));
+                        renderHistory();
+                    });
+                });
+            }
+            
+            // Handle URL redirection for custom short links
+            function handleWhatsAppRedirection() {
+                const params = new URLSearchParams(window.location.search);
+                const waCode = params.get('wa');
+                
+                if (waCode) {
+                    const originalUrl = urlMappings[waCode];
+                    
+                    if (originalUrl) {
+                        // Redirect to the original WhatsApp URL
+                        window.location.href = originalUrl;
+                    }
+                }
+            }
+            
+            // Initialize
+            updatePreview();
+            handleWhatsAppRedirection();
+        });
+    </script>
+</body>
+</html>
